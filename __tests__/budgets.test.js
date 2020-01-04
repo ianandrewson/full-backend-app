@@ -95,13 +95,13 @@ describe('budget route tests', () => {
   });
 
   it('should be able to update a budget', async() => {
-    await Budget.create({
+    const budget = await Budget.create({
       userId: user.id,
       monthOf: '1/2020',
       budget: 1000
     });
     await agent
-      .patch('/api/v1/budgets')
+      .patch(`/api/v1/budgets/${budget._id}`)
       .send({ budget: 2000 })
       .then(res => {
         expect(res.body).toEqual({
