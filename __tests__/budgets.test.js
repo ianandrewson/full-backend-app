@@ -121,7 +121,7 @@ describe('budget route tests', () => {
       budget: 1000
     });
     await agent
-      .delete(`/api/v1/budgets/${budget.id}`)
+      .delete(`/api/v1/budgets/${budget._id}`)
       .then(res => {
         expect(res.body).toEqual({
           _id: expect.any(String),
