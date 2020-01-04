@@ -82,7 +82,7 @@ describe('budget route tests', () => {
       budget: 1000,
     });
     await agent
-      .get(`/api/v1/budets/${budget.id}`)
+      .get(`/api/v1/budgets/${budget._id}`)
       .then(res => {
         expect(res.body).toEqual({
           _id: expect.any(String),
