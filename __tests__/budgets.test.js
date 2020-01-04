@@ -11,6 +11,11 @@ describe('budget route tests', () => {
     connect();
   });
 
+  beforeEach(() => {
+    return mongoose.connection.dropDatabase();
+  });
+
+
   let user;
   let agent;
   beforeEach(async() => {
@@ -24,10 +29,6 @@ describe('budget route tests', () => {
     await agent
       .post('/api/v1/auth/login')
       .send({ email: 'test@test.test', password: 'password' });
-  });
-
-  beforeEach(() => {
-    return mongoose.connection.dropDatabase();
   });
 
   afterAll(() => {
@@ -64,7 +65,7 @@ describe('budget route tests', () => {
       .then(res => {
         budgets.forEach(budget => {
           expect(res.body).toContainEqual({
-            _id: budget.id,
+            _id: budget._id.toString(),
             userId: user.id,
             monthOf: budget.monthOf,
             budget: budget.budget,
