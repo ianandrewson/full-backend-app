@@ -19,7 +19,7 @@ describe('app routes', () => {
     return mongoose.connection.close();
   });
 
-  it('should be able to make a new user', () => {
+  it('should be able to signup a new user', () => {
     return request(app)
       .post('/api/v1/auth/signup')
       .send({
@@ -35,12 +35,13 @@ describe('app routes', () => {
           email: 'test@test.test',
           firstName: 'Beatrice',
           lastName: 'LeCroix',
+          id: res.body._id,
           __v: 0
         });
       });
   });
 
-  it('should be able to signin a user', async() => {
+  it('should be able to login a user', async() => {
     const user = await User.create({
       email: 'test@test.test',
       password: 'password',
@@ -57,6 +58,7 @@ describe('app routes', () => {
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
+          id: res.body._id,
           __v: 0
         });
       });
@@ -73,7 +75,7 @@ describe('app routes', () => {
       .then(res => {
         expect(res.body).toEqual({
           status: 401,
-          message: 'Invalid email/password. Please try again.'
+          message: 'Invalid email or password. Please try again.'
         });
       });
   });
@@ -95,12 +97,16 @@ describe('app routes', () => {
   });
 
   it('should verify a user is authorized', async() => {
-    const user = User.create({
+    const user = await User.create({
       email: 'test@test.test',
       password: 'password'
     });
 
     const agent = request.agent(app);
+
+    await agent
+      .post('/api/v1/auth/login')
+      .send({ email: 'test@test.test', password: 'password' });
 
     await agent
       .get('/api/v1/auth/verify')
