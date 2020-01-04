@@ -12,11 +12,18 @@ describe('budget route tests', () => {
   });
 
   let user;
+  let agent;
   beforeEach(async() => {
     user = await User.create({
       email: 'test@test.test',
       password: 'password'
     });
+
+    agent = request.agent(app);
+
+    await agent
+      .post('/api/v1/auth/login')
+      .send({ email: 'test@test.test', password: 'password' });
   });
 
   beforeEach(() => {
@@ -27,8 +34,8 @@ describe('budget route tests', () => {
     return mongoose.connection.close();
   });
 
-  it('should be able to post a new budget', () => {
-    return request(app)
+  it('should be able to post a new budget', async() => {
+    await agent
       .post('/api/v1/budgets')
       .send({
         userId: user.id,
@@ -52,7 +59,7 @@ describe('budget route tests', () => {
       { userId: user.id, monthOf: '2/2020', budget: 1050 },
       { userId: user.id, monthOf: '3/2020', budget: 950 }
     ]);
-    return request(app)
+    await agent
       .get('/api/v1/budgets')
       .then(res => {
         budgets.forEach(budget => {
@@ -73,7 +80,7 @@ describe('budget route tests', () => {
       monthOf: '1/2020',
       budget: 1000,
     });
-    return request(app)
+    await agent
       .get(`/api/v1/budets/${budget.id}`)
       .then(res => {
         expect(res.body).toEqual({
@@ -92,7 +99,7 @@ describe('budget route tests', () => {
       monthOf: '1/2020',
       budget: 1000
     });
-    return request(app)
+    await agent
       .patch('/api/v1/budgets')
       .send({ budget: 2000 })
       .then(res => {
@@ -112,7 +119,7 @@ describe('budget route tests', () => {
       monthOf: '1/2020',
       budget: 1000
     });
-    return request(app)
+    await agent
       .delete(`/api/v1/budgets/${budget.id}`)
       .then(res => {
         expect(res.body).toEqual({
