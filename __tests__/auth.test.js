@@ -35,7 +35,6 @@ describe('app routes', () => {
           email: 'test@test.test',
           firstName: 'Beatrice',
           lastName: 'LeCroix',
-          id: res.body._id,
           __v: 0
         });
       });
@@ -58,7 +57,6 @@ describe('app routes', () => {
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
-          id: res.body._id,
           __v: 0
         });
       });
