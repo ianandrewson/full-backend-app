@@ -20,15 +20,14 @@ describe('app routes', () => {
   });
 
   it('should be able to make a new user', () => {
-    const user = {
-      email: 'test@test.test',
-      password: 'password',
-      firstName: 'Beatrice',
-      lastName: 'LeCroix'
-    };
     return request(app)
       .post('/api/v1/auth/signup')
-      .send(user)
+      .send({
+        email: 'test@test.test',
+        password: 'password',
+        firstName: 'Beatrice',
+        lastName: 'LeCroix'
+      })
       .then(res => {
         expect(res.header['set-cookie'][0]).toEqual(expect.stringContaining('session='));
         expect(res.body).toEqual({
