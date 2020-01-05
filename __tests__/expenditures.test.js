@@ -49,15 +49,16 @@ describe('expenditure route tests', () => {
         budgetId: budget._id,
         item: 'groceries',
         cost: 43.22,
-        dateOfExpenditure: new Date('1/4/2020')
+        dateOfExpenditure: new Date('1/4/2020 14:30')
       })
       .then(res => {
+        console.log(typeof budget, budget);
         expect(res.body).toEqual({
           _id: expect.any(String),
-          budgetId: budget._id,
+          budgetId: budget._id.toString(),
           item: 'groceries',
           cost: 43.22,
-          dateOfExpenditure: ('1/4/2020'),
+          dateOfExpenditure: '2020-01-04T22:30:00.000Z',
           __v: 0
         });
       });
