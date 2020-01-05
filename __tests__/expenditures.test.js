@@ -52,9 +52,95 @@ describe('expenditure route tests', () => {
         dateOfExpenditure: new Date('1/4/2020 14:30')
       })
       .then(res => {
-        console.log(typeof budget, budget);
         expect(res.body).toEqual({
           _id: expect.any(String),
+          budgetId: budget._id.toString(),
+          item: 'groceries',
+          cost: 43.22,
+          dateOfExpenditure: '2020-01-04T22:30:00.000Z',
+          __v: 0
+        });
+      });
+  });
+
+  it('should be able to get all of a budget\'s expenditures', async() => {
+    const expenditures = await Expenditure.create([
+      { budgetId: budget._id, item: 'groceries', cost: 43.22, dateOfExpenditure: new Date('1/4/2020 14:30') },
+      { budgetId: budget._id, item: 'haircut', cost: 30.00, dateOfExpenditure: new Date('1/5/2020 09:45') },
+      { budgetId: budget._id, item: 'beers', cost: 12.00, dateOfExpenditure: new Date('1/3/2020 23:00') },
+    ]);
+
+    await agent
+      .get('/api/v1/expenditures')
+      .then(res => {
+        expenditures.forEach(expenditure => {
+          expect(res.body).toContainEqual({
+            _id: expenditure._id.toString(),
+            budgetId: budget._id.toString(),
+            item: expenditure.item,
+            cost: expenditure.cost,
+            dateOfExpenditure: expenditure.dateOfExpenditure,
+            __v: 0
+          });
+        });
+      });
+  });
+
+  it('should be able to get an expenditure by id', async() => {
+    const expenditure = Expenditure.create({
+      budgetId: budget._id,
+      item: 'groceries',
+      cost: 43.22,
+      dateOfExpenditure: new Date('1/4/2020 14:30')
+    });
+    await agent
+      .get(`/api/v1/expenditures/${expenditure._id}`)
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: expect.any(String),
+          budgetId: budget._id.toString(),
+          item: 'groceries',
+          cost: 43.22,
+          dateOfExpenditure: '2020-01-04T22:30:00.000Z',
+          __v: 0
+        });
+      });
+  });
+  
+  it('should be able to update an expenditure by id', async() => {
+    const expenditure = await Expenditure.create({
+      budgetId: budget._id,
+      item: 'groceries',
+      cost: 43.22,
+      dateOfExpenditure: new Date('1/4/2020 14:30')
+    });
+    await agent
+      .patch(`/api/v1/expenditures/${expenditure._id}`)
+      .send({ item: 'bowling', cost: 20.22 })
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: expenditure._id.toString(),
+          budgetId: budget._id.toString(),
+          item: 'bowling',
+          cost: 20.22,
+          dateOfExpenditure: '2020-01-04T22:30:00.000Z',
+          __v: 0
+        });
+      });
+  });
+
+  it('should be able to delete an expenditure by ID', async() => {
+    const expenditure = Expenditure.create({
+      budgetId: budget._id,
+      item: 'groceries',
+      cost: 43.22,
+      dateOfExpenditure: new Date('1/4/2020 14:30')
+    });
+    await agent
+      .delete(`/api/v1/expenditures:${expenditure._id}`)
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: expenditure._id.toString(),
           budgetId: budget._id.toString(),
           item: 'groceries',
           cost: 43.22,
