@@ -66,12 +66,13 @@ describe('expenditure route tests', () => {
   it('should be able to get all of a budget\'s expenditures', async() => {
     const expenditures = await Expenditure.create([
       { budgetId: budget._id, item: 'groceries', cost: 43.22, dateOfExpenditure: new Date('1/4/2020 14:30') },
-      { budgetId: budget._id, item: 'haircut', cost: 30.00, dateOfExpenditure: new Date('1/5/2020 09:45') },
-      { budgetId: budget._id, item: 'beers', cost: 12.00, dateOfExpenditure: new Date('1/3/2020 23:00') },
+      { budgetId: budget._id, item: 'haircut', cost: 30.00, dateOfExpenditure: new Date('1/4/2020 14:30') },
+      { budgetId: budget._id, item: 'beers', cost: 12.00, dateOfExpenditure: new Date('1/4/2020 14:30') },
     ]);
 
     await agent
       .get('/api/v1/expenditures')
+      .send({ budgetId: budget._id })
       .then(res => {
         expenditures.forEach(expenditure => {
           expect(res.body).toContainEqual({
@@ -79,7 +80,7 @@ describe('expenditure route tests', () => {
             budgetId: budget._id.toString(),
             item: expenditure.item,
             cost: expenditure.cost,
-            dateOfExpenditure: expenditure.dateOfExpenditure,
+            dateOfExpenditure: '2020-01-04T22:30:00.000Z',
             __v: 0
           });
         });
@@ -87,7 +88,7 @@ describe('expenditure route tests', () => {
   });
 
   it('should be able to get an expenditure by id', async() => {
-    const expenditure = Expenditure.create({
+    const expenditure = await Expenditure.create({
       budgetId: budget._id,
       item: 'groceries',
       cost: 43.22,
@@ -130,14 +131,14 @@ describe('expenditure route tests', () => {
   });
 
   it('should be able to delete an expenditure by ID', async() => {
-    const expenditure = Expenditure.create({
+    const expenditure = await Expenditure.create({
       budgetId: budget._id,
       item: 'groceries',
       cost: 43.22,
       dateOfExpenditure: new Date('1/4/2020 14:30')
     });
     await agent
-      .delete(`/api/v1/expenditures:${expenditure._id}`)
+      .delete(`/api/v1/expenditures/${expenditure._id}`)
       .then(res => {
         expect(res.body).toEqual({
           _id: expenditure._id.toString(),
