@@ -41,14 +41,14 @@ describe('expenditure aggregation tests', () => {
       .get('/api/v1/expenditures/mostExpensive')
       .send({ budgetId: seedDictionary.user1Budget1._id.toString() })
       .then(res => {
-        expect(res.body).toEqual({
+        expect(res.body).toEqual([{
           _id: expect.any(String),
           budgetId: seedDictionary.user1Budget1._id.toString(),
           item: 'groceries',
           cost: 40.33,
-          dateOfExpenditure: '2020-01-03T00:00:00.000Z',
+          dateOfExpenditure: '2020-01-03T08:00:00.000Z',
           __v: 0
-        });
+        }]);
       });
   });
 
@@ -62,10 +62,10 @@ describe('expenditure aggregation tests', () => {
       .get('/api/v1/expenditures/itemTotals')
       .send({ budgetId: seedDictionary.user1Budget2._id.toString() })
       .then(res => {
-        expect(res.body).toEqual({
+        expect(res.body).toEqual([{
           _id: 'pinball',
           total: 22
-        });
+        }]);
       });
   });
 
@@ -78,12 +78,12 @@ describe('expenditure aggregation tests', () => {
 
     await agent
       .get('/api/v1/expenditures/monthlyTotal')
-      .send({ budgetId: seedDictionary.user2budget1._id })
+      .send({ budgetId: seedDictionary.user2Budget1._id })
       .then(res => {
-        expect(res.body).toEqual({
-          _id: seedDictionary.user2budget1._id.toString(),
+        expect(res.body).toEqual([{
+          _id: seedDictionary.user2Budget1._id.toString(),
           total: 700.64
-        });
+        }]);
       });
   });
 });
