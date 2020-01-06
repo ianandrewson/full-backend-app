@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "jest --verbose --runInBand",
-    "test:watch": "npm run test -- --watch",
+    "test:watch": "npm run test -- --watchAll",
     "start": "node server.js",
     "start:watch": "nodemon server.js"
   },
@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.4",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
